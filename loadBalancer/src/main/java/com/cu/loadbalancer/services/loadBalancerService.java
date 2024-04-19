@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +22,15 @@ public class loadBalancerService {
     }
 
     public boolean registerServer(serverInfo newServerInfo) {
-       try {
-           serverList.add(new Socket(newServerInfo.getIp(), newServerInfo.getPort()));
-           return true;
-       } catch (IOException e) {
-           System.out.println(e);
-           return false;
-       }
+        try {
+            // Create a new socket connection with the server
+            Socket serverSocket = new Socket(newServerInfo.getIp(), newServerInfo.getPort());
+            serverList.add(serverSocket);
+            return true;
+        } catch (IOException e) {
+            System.out.println(e);
+            return false;
+        }
     }
 
     public boolean assignTask(String task) {
