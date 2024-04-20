@@ -1,5 +1,8 @@
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.gson.Gson;
 
@@ -7,12 +10,20 @@ public class server {
     public static void main(String[] args) throws IOException, URISyntaxException {
         int serverCount;
         System.out.println("insert number of servers: ");
-        serverCount = System.in.read();
-        int nextPort=8888;
+        Scanner scanner = new Scanner(System.in);
+        serverCount = scanner.nextInt();
+        AtomicInteger nextPort= new AtomicInteger(8888);
         for (int i=0; i<serverCount; i++)
         {
-            createServer(nextPort++);
+            CompletableFuture.runAsync(() -> {
+                try {
+                    createServer(nextPort.getAndIncrement());
+                } catch (IOException | URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            });
         }
+        while (true) {}
     }
     public static void createServer(int port) throws IOException, URISyntaxException {
 
