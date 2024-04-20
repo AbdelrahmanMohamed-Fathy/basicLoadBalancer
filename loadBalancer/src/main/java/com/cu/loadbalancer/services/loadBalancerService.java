@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +40,11 @@ public class loadBalancerService {
         try {
             Socket assignee = serverList.get(Next);
             incrementNext();
-            System.out.println("Task assigned to server: " + assignee.getInetAddress() + ":" + assignee.getPort());
+            System.out.println("Task assigned to server: " + assignee.getInetAddress() + ":" + assignee.getPort() + ".\n");
             PrintWriter out = new PrintWriter(assignee.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(assignee.getInputStream()));
             out.println(task);
             String result = in.readLine();
-            in.close();
-            out.close();
             return result.equals("true");
         } catch (IOException e) {
             System.out.println(e);

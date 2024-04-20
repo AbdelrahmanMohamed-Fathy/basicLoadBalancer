@@ -1,17 +1,25 @@
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URL;
+import java.net.*;
+
 import com.google.gson.Gson;
 
 public class server {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        int serverCount;
+        System.out.println("insert number of servers: ");
+        serverCount = System.in.read();
+        int nextPort=8888;
+        for (int i=0; i<serverCount; i++)
+        {
+            createServer(nextPort++);
+        }
+    }
+    public static void createServer(int port) throws IOException, URISyntaxException {
 
-        ServerSocket server = new ServerSocket(8888);
+        ServerSocket server = new ServerSocket(port);
 
-        URL url = new URL("http://localhost:8080/register"); // Creates a URL object with the load balancer's address.
-        HttpURLConnection con = (HttpURLConnection) url.openConnection(); // Opens a connection to the load balancer.
+        URI url = new URI("http://localhost:8080/register"); // Creates a URL object with the load balancer's address.
+        HttpURLConnection con = (HttpURLConnection) url.toURL().openConnection(); // Opens a connection to the load balancer.
         con.setRequestMethod("POST");   // Sets the request method to POST.
         con.setDoOutput(true);  // Sets the doOutput flag to true.
         con.setRequestProperty("Content-Type", "application/json; utf-8"); // Sets the Content-Type header to application/json
@@ -32,8 +40,11 @@ public class server {
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
             PrintWriter output = new PrintWriter(client.getOutputStream(), true);
             while (true) {
-                String S = input.readLine();
-                new alphanumericChecker(S, output).start();
+                if (input.ready()) {
+                    String S = input.readLine();
+                    alphanumericChecker temp = new alphanumericChecker(S, output);
+                    temp.start();
+                }
             }
         } else {
             System.out.println("Server registration failed with the load balancer.");
