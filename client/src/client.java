@@ -13,10 +13,13 @@ public class client {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String str = br.readLine();
 
+            System.out.println("you entered: " + str);
+
             // Sends this string to the load balancer for checking through a http request.
             URL url = new URL("http://localhost:8080/check"); // Creates a URL object with the load balancer's address.
             HttpURLConnection con = (HttpURLConnection) url.openConnection(); // Opens a connection to the load balancer.
             con.setRequestMethod("POST");   // Sets the request method to POST.
+            con.setRequestProperty("Content-Type", "text/plain; charset=UTF-8"); // Sets the Content-Type header to text/plain
             con.setDoOutput(true);  // Sets the doOutput flag to true.
             DataOutputStream out = new DataOutputStream(con.getOutputStream()); // Opens a data output stream to send the string.
             out.writeBytes(str);    // Writes the string to the output stream.

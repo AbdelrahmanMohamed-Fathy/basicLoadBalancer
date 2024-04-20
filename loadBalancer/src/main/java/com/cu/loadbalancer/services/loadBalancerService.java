@@ -41,6 +41,7 @@ public class loadBalancerService {
         try {
             Socket assignee = serverList.get(Next);
             incrementNext();
+            System.out.println("Task assigned to server: " + assignee.getInetAddress() + ":" + assignee.getPort());
             PrintWriter out = new PrintWriter(assignee.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(assignee.getInputStream()));
             out.println(task);

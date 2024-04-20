@@ -27,6 +27,7 @@ public class loadBalancerController {
 
     @PostMapping("/check")
     boolean checkString(@RequestBody String task) {
+        System.out.println("Task received at load balancer controller: " + task);
         return service.assignTask(task);
     }
 }
